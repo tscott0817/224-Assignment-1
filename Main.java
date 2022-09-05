@@ -130,81 +130,31 @@ public class Main {
           tempInstructorList.add(instructors[itr]);
         }
         itr += 1;
-        System.out.println(tempInstructorList);
+        //System.out.println(tempInstructorList);
       }
-      //System.out.println(tempInstructorList);
+      System.out.println(tempInstructorList);
       System.out.println("\n");
 
-//      Instructor[] newInst = new Instructor[tempInstructorList.size()];
-//      int itr2 = 0;
-//      for (Instructor tempList : tempInstructorList) {
-//        newInst[itr2] = tempList;
-//        coveringSets.add(newInst);
-//        itr2 += 1;
-//      }
+      Instructor[] newInst = new Instructor[tempInstructorList.size()];
+      int itr2 = 0;
+      for (Instructor tempList : tempInstructorList) {
+        newInst[itr2] = tempList;
+        coveringSets.add(newInst);
+        itr2 += 1;
+      }
       tempInstructorList.removeAll(tempInstructorList);
     }
 
-//    for (Instructor[] cover : coveringSets) {
-//      for (Instructor allSets : cover) {
-//        System.out.println(allSets);
-//      }
-//      System.out.println("\n");
-//    }
-//    System.out.println(instructorList);
-
-
-
-
-//    for (int i = 0; i < instructorPerms.size(); i++) {
-//      for (int j = 0; j < instructorPerms.get(i).length; j++) {
-//        if (instructorPerms.get(i)[j] == true) {
-//          instructorList.add(instructors[j]);
-//        }
-//      }
-
-//    for (boolean[] boolArr : instructorPerms) {
-//      int itr = 0;
-//      for (boolean bool : boolArr) {
-//        if (bool == true) {
-//          instructorList.add(instructors[itr]);
-//        }
-//        itr++;
-//      }
-//
-//      System.out.println(instructorList);
-
-//      for (String currCourse : courses) {
-//        for (Instructor currTeacher : instructorList) {
-//          if (currTeacher.canTeach(currCourse)) {
-//
-//          }
-//        }
-//
-////        if (courseItr == courses.length) {
-////          for (int i = 0; i < instructorList.size(); i++) {
-////            rtnInstructors[i] = instructorList.get(i);
-////          }
-////        }
-//
-//      }
-//    }
+    String[] tempCourses;
+    for (Instructor[] inst: coveringSets) {
+      //System.out.println(inst);
+      for (Instructor teacher : inst) {
+        System.out.println(teacher);
+      }
+      System.out.println("\n");
+    }
 
     return rtnInstructors;
-//    for (int currCourse = 0; currCourse < courses.length; currCourse++) {
-//
-//    }
-//    for (String currentCourse : courses) {
-//      for (boolean[] bool : instructorPerms) {
-//        if (bool == true) {
-//
-//        }
-//      }
-//
-//    }
-
-
-
   }
 
   //-----------------------------------------------------------------------
