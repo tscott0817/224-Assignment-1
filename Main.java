@@ -70,7 +70,7 @@ public class Main {
     john.teach(johnCourses);
 
     Instructor tom = new Instructor("Tom");
-    String tomCourses[] = {"ART002", "ART110", "ART125"};
+    String tomCourses[] = {"ART008", "ART110", "ART125"};
     tom.teach(tomCourses);
 
     Instructor mary = new Instructor("Mary");
@@ -118,41 +118,46 @@ public class Main {
 
     ArrayList<boolean[]> instructorPerms = permute(instructors.length);
     ArrayList<Instructor> tempInstructorList = new ArrayList<>();
+    ArrayList<Instructor[]> allSets = new ArrayList<>();
     ArrayList<Instructor[]> coveringSets = new ArrayList<>();
     Instructor[] rtnInstructors = new Instructor[instructors.length];
 
+    // Get all possible sets with permute() ArrayList
     for (boolean[] arr : instructorPerms) {
-      int itr = 0;
+      int boolItr = 0;
       for (boolean value : arr) {
-        System.out.println("[" + value + "]");
-
+        System.out.println(value);
         if (value == true) {
-          tempInstructorList.add(instructors[itr]);
+          tempInstructorList.add(instructors[boolItr]);
         }
-        itr += 1;
-        //System.out.println(tempInstructorList);
+        boolItr++;
       }
-      System.out.println(tempInstructorList);
-      System.out.println("\n");
 
-      Instructor[] newInst = new Instructor[tempInstructorList.size()];
-      int itr2 = 0;
-      for (Instructor tempList : tempInstructorList) {
-        newInst[itr2] = tempList;
-        coveringSets.add(newInst);
-        itr2 += 1;
+      System.out.println(tempInstructorList); // Entire array
+
+      int instItr = 0;
+      Instructor[] instructorArr = new Instructor[tempInstructorList.size()];
+      for (Instructor tempInstructors : tempInstructorList) {
+        System.out.println(tempInstructors); // For element of array
+        instructorArr[instItr] = tempInstructors;
+        instItr++;
       }
+      System.out.println("\n");
+      allSets.add(instructorArr);
       tempInstructorList.removeAll(tempInstructorList);
     }
 
-    String[] tempCourses;
-    for (Instructor[] inst: coveringSets) {
-      //System.out.println(inst);
-      for (Instructor teacher : inst) {
+
+    for (Instructor[] sets : allSets) {
+      for (Instructor teacher : sets) {
         System.out.println(teacher);
       }
       System.out.println("\n");
     }
+
+    // Find which sets cover all classes
+
+    // Out of remaining sets, find the one with the fewest teachers
 
     return rtnInstructors;
   }
