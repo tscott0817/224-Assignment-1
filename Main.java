@@ -115,7 +115,6 @@ public class Main {
     Instructor[] rtnInstructors;
 
     for (boolean[] arr : instructorPerms) {
-
       int boolItr = 0; // Tracks the current array of boolean values
       int trueQuant = 0; // Tracks number of true values per boolean array
 
@@ -152,12 +151,11 @@ public class Main {
         }
       }
 
-      /*** Add instructors and number of bool values to arrays if it is a covering set ***/
+      /*** Add instructors and number of bool values to arrays if it is a cover set ***/
       if (Arrays.equals(tempCourseList, courses)) {
         coverSets.add(instructorArr);
         totalTrue.add(trueQuant);
       }
-
       tempInstructorList.removeAll(tempInstructorList); // Empty temp array for reuse
     }
 
