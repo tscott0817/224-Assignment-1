@@ -5,15 +5,6 @@ public class Main {
   public static void main(String argv[]) {
     //testOne();
     testTwo();
-
-    /*** Permute Tests ***/
-//    ArrayList<boolean[]> perm = permute(3);
-//    for (boolean[] arr : perm) {
-//      for (boolean value : arr) {
-//        System.out.println("[" + value + "]");
-//      }
-//      System.out.println("\n");
-//    }
   }
 
   //--------------------------------------------------------
@@ -118,29 +109,30 @@ public class Main {
 
     ArrayList<boolean[]> instructorPerms = permute(instructors.length);
     ArrayList<Instructor> tempInstructorList = new ArrayList<>();
-    ArrayList<Instructor[]> coveringSets = new ArrayList<>();
+    ArrayList<Instructor[]> coverSets = new ArrayList<>();
     ArrayList<Integer> totalTrue = new ArrayList<>();
     Instructor[] rtnInstructors;
 
+    /*** Get all possible set covers and their number of true values ***/
     for (boolean[] arr : instructorPerms) {
 
-      /*** Get all possible sets **/
-      int boolItr = 0;
-      int trueQuant = 0;
+      int boolItr = 0; // Tracks the current array of boolean values
+      int trueQuant = 0; // Tracks number of true values per boolean array
       for (boolean value : arr) {
-        //System.out.println(value);
+
+        /*** If current bool value is true, add the instructor at that index to temp list. Count total number of true values ***/
         if (value == true) {
           tempInstructorList.add(instructors[boolItr]);
-          trueQuant += 1;
+          trueQuant++;
         }
         boolItr++;
 
         /*** Create temporary array of instructors to test against courses ***/
-        int instItr = 0;
+        int instructorItr = 0;
         Instructor[] instructorArr = new Instructor[tempInstructorList.size()];
         for (Instructor tempInstructors : tempInstructorList) {
-          instructorArr[instItr] = tempInstructors;
-          instItr++;
+          instructorArr[instructorItr] = tempInstructors;
+          instructorItr++;
         }
 
         /*** Check how many courses are covered by current temp array of instructors ***/
@@ -152,33 +144,23 @@ public class Main {
               tempCourses.add(currCourse);
             }
           }
-          int itrCourses = 0;
-          for (String str : tempCourses) {
-            tempCourseList[itrCourses] = str;
-            itrCourses += 1;
+          int coursesItr = 0;
+          for (String str : tempCourses) { // Add each course to temp course array
+            tempCourseList[coursesItr] = str;
+            coursesItr++;
           }
         }
+
+        /*** Add instructor array and its number of bool values if this is a covering set ***/
         if (Arrays.equals(tempCourseList, courses)) {
-          coveringSets.add(instructorArr);
+          coverSets.add(instructorArr);
           totalTrue.add(trueQuant);
         }
       }
       tempInstructorList.removeAll(tempInstructorList); // Empty temp array for reuse
     }
 
-    /*** Just printing results after boolean[] loop ***/
-    System.out.println("| All covering sets |");
-    for (Instructor[] cover : coveringSets) {
-      for (Instructor teacher : cover) {
-        System.out.println(teacher);
-      }
-      System.out.println("\n");
-    }
-    System.out.println("| Total true from all sets |");
-    System.out.println(totalTrue);
-
     /*** Get the smallest of the covering sets and return ***/
-    //Instructor[] rtnInstructors = new Instructor[instructors.length];
     int min = totalTrue.get(0);
     for (int i = 0; i < totalTrue.size(); i++) { // TODO: For each returning out of bounds
       if (min > totalTrue.get(i)) {
@@ -186,14 +168,10 @@ public class Main {
       }
     }
     int indexPos = totalTrue.indexOf(min); // Get the index position of minimal value
-    rtnInstructors = coveringSets.get(indexPos);
+    rtnInstructors = coverSets.get(indexPos); // Retrieve the appropriate instructor based on minimal value index
 
-    System.out.println("Minimum element: " + min);
-
-    // Return OG array if no covering sets
     return  rtnInstructors;
   }
-
   //-----------------------------------------------------------------------
 
   public static ArrayList<boolean[]> permute(int n) {
