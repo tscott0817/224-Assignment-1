@@ -122,8 +122,10 @@ public class Main {
     ArrayList<Instructor[]> coveringSets = new ArrayList<>();
     Instructor[] rtnInstructors = new Instructor[instructors.length];
 
-    // Get all possible sets with permute() ArrayList
+    /*** Get all possible sets with permute() ArrayList ***/
     for (boolean[] arr : instructorPerms) {
+
+      // Get all possible sets
       int boolItr = 0;
       for (boolean value : arr) {
         System.out.println(value);
@@ -132,32 +134,60 @@ public class Main {
         }
         boolItr++;
       }
-
       System.out.println(tempInstructorList); // Entire array
 
+      // Create temporary array of instructor to test against courses
       int instItr = 0;
       Instructor[] instructorArr = new Instructor[tempInstructorList.size()];
       for (Instructor tempInstructors : tempInstructorList) {
-        System.out.println(tempInstructors); // For element of array
         instructorArr[instItr] = tempInstructors;
         instItr++;
       }
+
+      // Works to add all
+      //allSets.add(instructorArr);
+      //coveringSets.add(instructorArr);
+
+      // Check how many courses are covered
+      ArrayList<String> tempCourses = new ArrayList<>();
+      String[] newCourseList = new String[courses.length];
+      for (String currCourse : courses) {
+        for (Instructor currInstructor : instructorArr) {
+          if (currInstructor.canTeach(currCourse) & !tempCourses.contains(currCourse)) {
+              tempCourses.add(currCourse);
+          }
+        }
+
+        int itr25 = 0;
+        for (String str: tempCourses) {
+          newCourseList[itr25] = str;
+          itr25 += 1;
+        }
+        //System.out.println(courseItr); // Prints how many of each course
+      }
+      System.out.println(tempCourses);
+//      for (String str : newCourseList) {
+//        System.out.println(str);
+//      }
+      //System.out.println(courses);
       System.out.println("\n");
-      allSets.add(instructorArr);
-      tempInstructorList.removeAll(tempInstructorList);
+
+      if (Arrays.equals(newCourseList, courses)) {
+        coveringSets.add(instructorArr);
+      }
+      tempInstructorList.removeAll(tempInstructorList); // Empty temp array for reuse
     }
 
-
-    for (Instructor[] sets : allSets) {
-      for (Instructor teacher : sets) {
-        System.out.println(teacher);
+    for (Instructor[] inst : coveringSets) {
+      for (Instructor inst2 : inst) {
+        System.out.println(inst2);
       }
       System.out.println("\n");
     }
 
-    // Find which sets cover all classes
+    /*** Determine which of these sets cover all courses ***/
 
-    // Out of remaining sets, find the one with the fewest teachers
+    /*** Out of remaining sets, find the one with the fewest teachers ***/
 
     return rtnInstructors;
   }
