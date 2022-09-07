@@ -3,8 +3,8 @@ import java.util.Arrays;
 
 public class Main {
   public static void main(String argv[]) {
-    testOne();
-//  testTwo();
+    //testOne();
+    testTwo();
 
     /*** Permute Tests ***/
 //    ArrayList<boolean[]> perm = permute(3);
@@ -90,7 +90,7 @@ public class Main {
     kira.teach(kiraCourses);
 
     Instructor hiram = new Instructor("Hiram");
-    String hiramCourses[] = {"ART001", "ARt110", "ART125"};
+    String hiramCourses[] = {"ART001", "ART110", "ART125"};
     hiram.teach(hiramCourses);
 
     Instructor simon = new Instructor("Simon");
@@ -118,78 +118,80 @@ public class Main {
 
     ArrayList<boolean[]> instructorPerms = permute(instructors.length);
     ArrayList<Instructor> tempInstructorList = new ArrayList<>();
-    ArrayList<Instructor[]> allSets = new ArrayList<>();
     ArrayList<Instructor[]> coveringSets = new ArrayList<>();
-    Instructor[] rtnInstructors = new Instructor[instructors.length];
+    ArrayList<Integer> totalTrue = new ArrayList<>();
+    Instructor[] rtnInstructors;
 
-    /*** Get all possible sets with permute() ArrayList ***/
     for (boolean[] arr : instructorPerms) {
 
-      // Get all possible sets
+      /*** Get all possible sets **/
       int boolItr = 0;
+      int trueQuant = 0;
       for (boolean value : arr) {
-        System.out.println(value);
+        //System.out.println(value);
         if (value == true) {
           tempInstructorList.add(instructors[boolItr]);
+          trueQuant += 1;
         }
         boolItr++;
-      }
-      System.out.println(tempInstructorList); // Entire array
 
-      // Create temporary array of instructor to test against courses
-      int instItr = 0;
-      Instructor[] instructorArr = new Instructor[tempInstructorList.size()];
-      for (Instructor tempInstructors : tempInstructorList) {
-        instructorArr[instItr] = tempInstructors;
-        instItr++;
-      }
+        /*** Create temporary array of instructors to test against courses ***/
+        int instItr = 0;
+        Instructor[] instructorArr = new Instructor[tempInstructorList.size()];
+        for (Instructor tempInstructors : tempInstructorList) {
+          instructorArr[instItr] = tempInstructors;
+          instItr++;
+        }
 
-      // Works to add all
-      //allSets.add(instructorArr);
-      //coveringSets.add(instructorArr);
-
-      // Check how many courses are covered
-      ArrayList<String> tempCourses = new ArrayList<>();
-      String[] newCourseList = new String[courses.length];
-      for (String currCourse : courses) {
-        for (Instructor currInstructor : instructorArr) {
-          if (currInstructor.canTeach(currCourse) & !tempCourses.contains(currCourse)) {
+        /*** Check how many courses are covered by current temp array of instructors ***/
+        ArrayList<String> tempCourses = new ArrayList<>();
+        String[] tempCourseList = new String[courses.length];
+        for (String currCourse : courses) {
+          for (Instructor currInstructor : instructorArr) {
+            if (currInstructor.canTeach(currCourse) & !tempCourses.contains(currCourse)) {
               tempCourses.add(currCourse);
+            }
+          }
+          int itrCourses = 0;
+          for (String str : tempCourses) {
+            tempCourseList[itrCourses] = str;
+            itrCourses += 1;
           }
         }
-
-        int itr25 = 0;
-        for (String str: tempCourses) {
-          newCourseList[itr25] = str;
-          itr25 += 1;
+        if (Arrays.equals(tempCourseList, courses)) {
+          coveringSets.add(instructorArr);
+          totalTrue.add(trueQuant);
         }
-        //System.out.println(courseItr); // Prints how many of each course
-      }
-      System.out.println(tempCourses);
-//      for (String str : newCourseList) {
-//        System.out.println(str);
-//      }
-      //System.out.println(courses);
-      System.out.println("\n");
-
-      if (Arrays.equals(newCourseList, courses)) {
-        coveringSets.add(instructorArr);
       }
       tempInstructorList.removeAll(tempInstructorList); // Empty temp array for reuse
     }
 
-    for (Instructor[] inst : coveringSets) {
-      for (Instructor inst2 : inst) {
-        System.out.println(inst2);
+    /*** Just printing results after boolean[] loop ***/
+    System.out.println("| All covering sets |");
+    for (Instructor[] cover : coveringSets) {
+      for (Instructor teacher : cover) {
+        System.out.println(teacher);
       }
       System.out.println("\n");
     }
+    System.out.println("| Total true from all sets |");
+    System.out.println(totalTrue);
 
-    /*** Determine which of these sets cover all courses ***/
+    /*** Get the smallest of the covering sets and return ***/
+    //Instructor[] rtnInstructors = new Instructor[instructors.length];
+    int min = totalTrue.get(0);
+    for (int i = 0; i < totalTrue.size(); i++) { // TODO: For each returning out of bounds
+      if (min > totalTrue.get(i)) {
+        min = totalTrue.get(i);
+      }
+    }
+    int indexPos = totalTrue.indexOf(min); // Get the index position of minimal value
+    rtnInstructors = coveringSets.get(indexPos);
 
-    /*** Out of remaining sets, find the one with the fewest teachers ***/
+    System.out.println("Minimum element: " + min);
 
-    return rtnInstructors;
+    // Return OG array if no covering sets
+    return  rtnInstructors;
   }
 
   //-----------------------------------------------------------------------
