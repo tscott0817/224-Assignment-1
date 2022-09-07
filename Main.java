@@ -3,7 +3,8 @@ import java.util.Arrays;
 
 public class Main {
   public static void main(String argv[]) {
-    //testOne();
+    testOne();
+    System.out.println("\n");
     testTwo();
   }
 
@@ -113,61 +114,61 @@ public class Main {
     ArrayList<Integer> totalTrue = new ArrayList<>();
     Instructor[] rtnInstructors;
 
-    /*** Get all possible set covers and their number of true values ***/
     for (boolean[] arr : instructorPerms) {
 
       int boolItr = 0; // Tracks the current array of boolean values
       int trueQuant = 0; // Tracks number of true values per boolean array
-      for (boolean value : arr) {
 
-        /*** If current bool value is true, add the instructor at that index to temp list. Count total number of true values ***/
+      /*** Get all possible set covers and their number of true values ***/
+      for (boolean value : arr) {
         if (value == true) {
           tempInstructorList.add(instructors[boolItr]);
           trueQuant++;
         }
         boolItr++;
+      }
 
-        /*** Create temporary array of instructors to test against courses ***/
-        int instructorItr = 0;
-        Instructor[] instructorArr = new Instructor[tempInstructorList.size()];
-        for (Instructor tempInstructors : tempInstructorList) {
-          instructorArr[instructorItr] = tempInstructors;
-          instructorItr++;
-        }
+      /*** Create temporary array of instructors to test against courses ***/
+      int instructorItr = 0;
+      Instructor[] instructorArr = new Instructor[tempInstructorList.size()];
+      for (Instructor tempInstructors : tempInstructorList) {
+        instructorArr[instructorItr] = tempInstructors;
+        instructorItr++;
+      }
 
-        /*** Check how many courses are covered by current temp array of instructors ***/
-        ArrayList<String> tempCourses = new ArrayList<>();
-        String[] tempCourseList = new String[courses.length];
-        for (String currCourse : courses) {
-          for (Instructor currInstructor : instructorArr) {
-            if (currInstructor.canTeach(currCourse) & !tempCourses.contains(currCourse)) {
-              tempCourses.add(currCourse);
-            }
-          }
-          int coursesItr = 0;
-          for (String str : tempCourses) { // Add each course to temp course array
-            tempCourseList[coursesItr] = str;
-            coursesItr++;
+      /*** Check how many courses are covered by current temp array of instructors ***/
+      ArrayList<String> tempCourses = new ArrayList<>();
+      String[] tempCourseList = new String[courses.length];
+      for (String currCourse : courses) {
+        for (Instructor currInstructor : instructorArr) {
+          if (currInstructor.canTeach(currCourse) & !tempCourses.contains(currCourse)) {
+            tempCourses.add(currCourse);
           }
         }
-
-        /*** Add instructor array and its number of bool values if this is a covering set ***/
-        if (Arrays.equals(tempCourseList, courses)) {
-          coverSets.add(instructorArr);
-          totalTrue.add(trueQuant);
+        int coursesItr = 0;
+        for (String str : tempCourses) { // Add each course to temp course array
+          tempCourseList[coursesItr] = str;
+          coursesItr++;
         }
       }
+
+      /*** Add instructors and number of bool values to arrays if it is a covering set ***/
+      if (Arrays.equals(tempCourseList, courses)) {
+        coverSets.add(instructorArr);
+        totalTrue.add(trueQuant);
+      }
+
       tempInstructorList.removeAll(tempInstructorList); // Empty temp array for reuse
     }
 
     /*** Get the smallest of the covering sets and return ***/
-    int min = totalTrue.get(0);
-    for (int i = 0; i < totalTrue.size(); i++) { // TODO: For each returning out of bounds
-      if (min > totalTrue.get(i)) {
-        min = totalTrue.get(i);
+    int minCover = totalTrue.get(0);
+    for (int i = 0; i < totalTrue.size(); i++) { // TODO: For each loop returns out of bounds
+      if (minCover > totalTrue.get(i)) {
+        minCover = totalTrue.get(i);
       }
     }
-    int indexPos = totalTrue.indexOf(min); // Get the index position of minimal value
+    int indexPos = totalTrue.indexOf(minCover); // Get the index position of minimal value
     rtnInstructors = coverSets.get(indexPos); // Retrieve the appropriate instructor based on minimal value index
 
     return  rtnInstructors;
