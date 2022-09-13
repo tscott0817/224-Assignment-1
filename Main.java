@@ -133,7 +133,7 @@ public class Main {
     for (boolean[] arr : instructorPerms) {
       int boolItr = 0; // Tracks the current array of boolean values
 
-      /*** Get all possible sets and their number of true values ***/
+      /*** Get all possible instructor sets ***/
       for (boolean value : arr) {
         if (value) {
           tempInstructorList.add(instructors[boolItr]);
@@ -164,13 +164,15 @@ public class Main {
           coursesItr++;
         }
       }
-      /*** Add instructors and number of bool values to arrays if a cover set is found ***/
+
+      /*** When first cover set is found add to ArrayList (for access outside of loop) and break loop***/
       if (Arrays.equals(tempCourseList, courses)) {
         minSet.add(tempInstructorArr);
+        break;
       }
       tempInstructorList.removeAll(tempInstructorList); // Empty temp array for reuse
     }
-    rtnInstructors = minSet.get(0); // Retrieve the appropriate instructor based on minimal value index
+    rtnInstructors = minSet.get(0); // Retrieve instructor from ArrayList
 
     return  rtnInstructors;
   }
@@ -181,13 +183,12 @@ public class Main {
     ArrayList<boolean[]> tempRtn = new ArrayList<>();
     ArrayList<boolean[]> rtnVal = new ArrayList<>();
 
-    /*** Get permutations of booleans ***/
+    /*** Get all permutations of booleans ***/
     if (n == 0) {
       boolean[] emptyArray = new boolean[0];
       tempRtn.add(emptyArray);
     }
     else {
-
       ArrayList<boolean[]> sublist = permute(n-1);
       for (boolean[] e: sublist) {
 
@@ -203,7 +204,7 @@ public class Main {
       }
     }
 
-    /*** Get all possible set covers, their number of true values, and index positions ***/
+    /*** Get the number of 'true' values and index positions of all permutations ***/
     ArrayList<Integer> numTrue = new ArrayList<>(); // Holds all sets of 'true' value totals
     ArrayList<Integer> indexValues = new ArrayList<>();
     int indexItr = 0;
@@ -219,7 +220,7 @@ public class Main {
       indexItr++;
     }
 
-    /*** Sort indexValues based on the ascending number of True values per set ***/
+    /*** Sort index positions based on the ascending number of 'true' values per set ***/
     for(int i = 0; i < numTrue.size(); i++){
       for(int j = i; j < numTrue.size(); j++){
         if(numTrue.get(i) > numTrue.get(j)){
@@ -240,12 +241,11 @@ public class Main {
     for (int i = 0; i < tempRtn.size(); i++) {
       rtnVal.add(tempRtn.get(indexValues.get(i)));
     }
-    tempRtn.removeAll(tempRtn);
 
     return rtnVal;
   }
 
-/*** Regular Assignment ***/
+//  /*** Regular Assignment ***/
 //  public static Instructor[] findMinCover(String[] courses, Instructor[] instructors) {
 //
 //    ArrayList<boolean[]> instructorPerms = permute(instructors.length);
@@ -341,3 +341,5 @@ public class Main {
 //    return rtnVal;
 //  }
 }
+
+
