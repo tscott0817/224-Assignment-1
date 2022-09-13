@@ -165,7 +165,7 @@ public class Main {
         }
       }
 
-      /*** When first cover set is found add to ArrayList (for access outside of loop) and break loop***/
+      /*** When first cover set is found add to ArrayList (to access outside of loop) and stop searching boolean[] ***/
       if (Arrays.equals(tempCourseList, courses)) {
         minSet.add(tempInstructorArr);
         break;
@@ -225,10 +225,12 @@ public class Main {
       for(int j = i; j < numTrue.size(); j++){
         if(numTrue.get(i) > numTrue.get(j)){
 
+          // To keep ordering correct in loop
           int temp1 = numTrue.get(i);
           numTrue.set(i, numTrue.get(j));
           numTrue.set(j, temp1);
 
+          // To add appropriate index
           int temp2 = indexValues.get(i);
           indexValues.set(i, indexValues.get(j));
           indexValues.set(j, temp2);
