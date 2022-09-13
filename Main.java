@@ -1,10 +1,21 @@
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Main {
   public static void main(String argv[]) {
 
+    /*** Permute Tests ***/
+    ArrayList<boolean[]> test = permute(3);
+    for (boolean[] arr : test) {
+      for (boolean value : arr) {
+        System.out.println(value);
+      }
+      System.out.println("\n");
+    }
     System.out.println("\n");
+
+    /*** Tests ***/
     System.out.println("/** Smallest set cover from test one **/");
     testOne();
     System.out.println("\n");
@@ -12,14 +23,6 @@ public class Main {
     System.out.println("/** Smallest set cover from test two **/");
     testTwo();
 
-//    /*** Permute Tests ***/
-//    ArrayList<boolean[]> test = permute(3);
-//    for (boolean[] arr : test) {
-//      for (boolean value : arr) {
-//        System.out.println(value);
-//      }
-//      System.out.println("\n");
-//    }
   }
 
   //--------------------------------------------------------
@@ -125,9 +128,10 @@ public class Main {
 
     ArrayList<boolean[]> instructorPerms = permute(instructors.length);
     ArrayList<Instructor> tempInstructorList = new ArrayList<>();
-    ArrayList<Instructor[]> minSet = new ArrayList<>();
+    ArrayList<Instructor[]> coverSets = new ArrayList<>();
     ArrayList<Integer> totalTrue = new ArrayList<>();
     Instructor[] rtnInstructors;
+    int block = 0;
 
     for (boolean[] arr : instructorPerms) {
       int boolItr = 0; // Tracks the current array of boolean values
@@ -167,12 +171,12 @@ public class Main {
       }
       /*** Add instructors and number of bool values to arrays if a cover set is found ***/
       if (Arrays.equals(tempCourseList, courses)) {
-        minSet.add(tempInstructorArr);
+        coverSets.add(tempInstructorArr);
         totalTrue.add(numTrue);
       }
       tempInstructorList.removeAll(tempInstructorList); // Empty temp array for reuse
     }
-    rtnInstructors = minSet.get(0); // Retrieve the appropriate instructor based on minimal value index
+    rtnInstructors = coverSets.get(0); // Retrieve the appropriate instructor based on minimal value index
 
     return  rtnInstructors;
   }
@@ -242,7 +246,7 @@ public class Main {
     for (int i = 0; i < tempRtn.size(); i++) {
       rtnVal.add(tempRtn.get(indexValues.get(i)));
     }
-    //tempRtn.removeAll(tempRtn);
+    tempRtn.removeAll(tempRtn);
 
     return rtnVal;
   }
