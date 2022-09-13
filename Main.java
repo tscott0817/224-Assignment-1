@@ -1,26 +1,25 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 
 public class Main {
   public static void main(String argv[]) {
 
-//    System.out.println("\n");
-//    System.out.println("/** Smallest set cover from test one **/");
-//    testOne();
-//    System.out.println("\n");
-//
-//    System.out.println("/** Smallest set cover from test two **/");
-//    testTwo();
+    System.out.println("\n");
+    System.out.println("/** Smallest set cover from test one **/");
+    testOne();
+    System.out.println("\n");
 
-    /*** Permute Tests ***/
-    ArrayList<boolean[]> test = permute(3);
-    for (boolean[] arr : test) {
-      for (boolean value : arr) {
-        System.out.println(value);
-      }
-      System.out.println("\n");
-    }
+    System.out.println("/** Smallest set cover from test two **/");
+    testTwo();
+
+//    /*** Permute Tests ***/
+//    ArrayList<boolean[]> test = permute(3);
+//    for (boolean[] arr : test) {
+//      for (boolean value : arr) {
+//        System.out.println(value);
+//      }
+//      System.out.println("\n");
+//    }
   }
 
   //--------------------------------------------------------
@@ -126,7 +125,7 @@ public class Main {
 
     ArrayList<boolean[]> instructorPerms = permute(instructors.length);
     ArrayList<Instructor> tempInstructorList = new ArrayList<>();
-    ArrayList<Instructor[]> coverSets = new ArrayList<>();
+    ArrayList<Instructor[]> minSet = new ArrayList<>();
     ArrayList<Integer> totalTrue = new ArrayList<>();
     Instructor[] rtnInstructors;
 
@@ -134,7 +133,7 @@ public class Main {
       int boolItr = 0; // Tracks the current array of boolean values
       int numTrue = 0; // Tracks number of true values per boolean array
 
-      /*** Get all possible set covers and their number of true values ***/
+      /*** Get all possible sets and their number of true values ***/
       for (boolean value : arr) {
         if (value == true) {
           tempInstructorList.add(instructors[boolItr]);
@@ -166,24 +165,14 @@ public class Main {
           coursesItr++;
         }
       }
-
       /*** Add instructors and number of bool values to arrays if a cover set is found ***/
       if (Arrays.equals(tempCourseList, courses)) {
-        coverSets.add(tempInstructorArr);
+        minSet.add(tempInstructorArr);
         totalTrue.add(numTrue);
       }
       tempInstructorList.removeAll(tempInstructorList); // Empty temp array for reuse
     }
-
-    /*** Get the smallest of the cover sets and return it ***/
-    int minCover = totalTrue.get(0);
-    for (int i = 0; i < totalTrue.size(); i++) { // TODO: For each loop returns out of bounds?
-      if (minCover > totalTrue.get(i)) {
-        minCover = totalTrue.get(i);
-      }
-    }
-    int indexPos = totalTrue.indexOf(minCover); // Get the index position of minimal value
-    rtnInstructors = coverSets.get(indexPos); // Retrieve the appropriate instructor based on minimal value index
+    rtnInstructors = minSet.get(0); // Retrieve the appropriate instructor based on minimal value index
 
     return  rtnInstructors;
   }
@@ -191,12 +180,13 @@ public class Main {
 
   public static ArrayList<boolean[]> permute(int n) {
 
+    ArrayList<boolean[]> tempRtn = new ArrayList<>();
     ArrayList<boolean[]> rtnVal = new ArrayList<>();
 
     if (n == 0) {
 
       boolean[] emptyArray = new boolean[0];
-      rtnVal.add(emptyArray);
+      tempRtn.add(emptyArray);
     }
     else {
 
@@ -206,60 +196,53 @@ public class Main {
         boolean[] a1 = new boolean[n];
         System.arraycopy(e, 0, a1, 0, e.length);
         a1[n-1] = true;
-        rtnVal.add(a1);
+        tempRtn.add(a1);
 
         boolean[] a2 = new boolean[n];
         System.arraycopy(e, 0, a2, 0, e.length);
         a2[n-1] = false;
-        rtnVal.add(a2);
+        tempRtn.add(a2);
       }
     }
 
-    ArrayList<Integer> totalTrue = new ArrayList<>();
+    /*** Get all possible set covers, their number of true values, and index positions ***/
+    ArrayList<Integer> orderedTrue = new ArrayList<>(); // Holds number of True values per set
     ArrayList<Integer> indexValues = new ArrayList<>();
     int indexItr = 0;
-    for (boolean[] arr : rtnVal) {
-      int boolItr = 0; // Tracks the current array of boolean values
-      int numTrue = 0; // Tracks number of true values per boolean array
-
-      /*** Get all possible set covers and their number of true values ***/
+    for (boolean[] arr : tempRtn) {
+      int numTrue = 0;
       for (boolean value : arr) {
         if (value == true) {
           numTrue++;
         }
-        //boolItr++;
       }
       indexValues.add(indexItr);
+      orderedTrue.add(numTrue);
       indexItr++;
-      totalTrue.add(numTrue);
-
     }
 
-    int k = totalTrue.size();
-    for (int i = 0; i < k - 1; i++) {
-      for (int j = 0; j < k - i - 1; j++) {
-        if (totalTrue.get(j) > totalTrue.get((j + 1))) {
+    /*** Sort indexValues based on the ascending number of True values per set ***/
+    for(int i = 0; i < orderedTrue.size(); i++){
+      for(int j = i; j < orderedTrue.size(); j++){
+        if(orderedTrue.get(i) > orderedTrue.get(j)){
 
-          int temp1 = indexValues.get(j);
-          indexValues.set(j, indexValues.get(j + 1));
-          indexValues.set(j + 1,temp1);
+          int temp1 = orderedTrue.get(i);
+          orderedTrue.set(i, orderedTrue.get(j));
+          orderedTrue.set(j, temp1);
 
-          int temp2 = totalTrue.get(j);
-          totalTrue.set(j, totalTrue.get(j + 1));
-          totalTrue.set(j + 1, temp2);
+          int temp2 = indexValues.get(i);
+          indexValues.set(i, indexValues.get(j));
+          indexValues.set(j, temp2);
 
         }
       }
     }
 
-    // Accurately prints out associated num values
-    System.out.println("Order by number of True and associated index values");
-    System.out.println(totalTrue);
-
-    System.out.println(indexValues);
-
-    System.out.println("\n");
-
+    /*** Use those index values to fill returned ArrayList ***/
+    for (int i = 0; i < tempRtn.size(); i++) {
+      rtnVal.add(tempRtn.get(indexValues.get(i)));
+    }
+    //tempRtn.removeAll(tempRtn);
 
     return rtnVal;
   }
@@ -277,7 +260,7 @@ public class Main {
 //      int boolItr = 0; // Tracks the current array of boolean values
 //      int trueQuant = 0; // Tracks number of true values per boolean array
 //
-//      /*** Get all possible set covers and their number of true values ***/
+//      /*** Get all possible sets and their number of true values ***/
 //      for (boolean value : arr) {
 //        if (value == true) {
 //          tempInstructorList.add(instructors[boolItr]);
